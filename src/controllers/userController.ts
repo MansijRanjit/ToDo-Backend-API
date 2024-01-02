@@ -28,16 +28,15 @@ const signup = async (req: Request, res: Response) => {
     //Hashed Password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    
-     //User Creation
-     const newUser = {
+    //User Creation
+    const newUser = {
       id: users.length + 1,
       username: username,
       password: hashedPassword,
       email: email,
-      refreshToken:""
+      refreshToken: "",
     };
-   
+
     //Generate JWT Token
     const token = jwt.sign(
       { email: newUser.email, id: newUser.id },
@@ -50,7 +49,7 @@ const signup = async (req: Request, res: Response) => {
       expiresIn: REFRESH_TOKEN_TIME,
     });
 
-    newUser.refreshToken=refreshToken;
+    newUser.refreshToken = refreshToken;
     users.push(newUser);
     //console.log(users);
 

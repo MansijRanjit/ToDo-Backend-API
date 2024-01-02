@@ -1,13 +1,10 @@
 import tasks from "../models/todo";
 import { Request, Response } from "express";
 
-
 //Display Task
 const getTask = async (req: Request & { userId?: number }, res: Response) => {
   try {
     const task = tasks.filter((task) => task.userId === req.userId);
-    //console.log(req.userId);
-    //console.log(tasks);
 
     res.status(200).json(task);
   } catch (error) {
@@ -37,7 +34,7 @@ const createTask = async (
 };
 
 //Update Task
-const updateTask = (req: Request & {userId?:number}, res: Response) => {
+const updateTask = (req: Request & { userId?: number }, res: Response) => {
   const taskId = parseInt(req.params.id);
   try {
     const taskIndex = tasks.findIndex(
@@ -48,7 +45,8 @@ const updateTask = (req: Request & {userId?:number}, res: Response) => {
       return res.status(404).json({ message: "Task not found" });
     }
 
-    tasks[taskIndex].completed = req.body.completed || tasks[taskIndex].completed;
+    tasks[taskIndex].completed =
+      req.body.completed || tasks[taskIndex].completed;
 
     res.status(200).json(tasks[taskIndex]);
   } catch (error) {
@@ -75,6 +73,5 @@ const deleteTask = (req: Request & { userId?: number }, res: Response) => {
     res.status(500).json({ message: "Something went wrong" });
   }
 };
-
 
 export { createTask, updateTask, deleteTask, getTask };
