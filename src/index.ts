@@ -1,16 +1,22 @@
-import { PORT } from "./constants";
 import express from "express";
+import config from "./config";
 
-import userRouter from "./routes/userRoutes";
-import todoRouter from "./routes/todoRoutes";
+import routes from "./routes";
+import { logger } from "./middlewares/logger";
+import { notFoundError,genericErrorHandler } from "./middlewares/errorHandler";
 
 const app = express();
 
-app.use(express.json());
+app.use(express.json());//Get req body
 
-app.use("/users", userRouter);
-app.use("/todo", todoRouter);
+app.use(logger);
 
-app.listen(PORT, () => {
-  console.log(`Server is listening on port: ${PORT}`);
+app.use(routes);
+
+app.use(genericErrorHandler);
+
+app.use(notFoundError);
+
+app.listen(config.serverPort, () => {
+  console.log(`Server is listening on port: ${config.serverPort}`);
 });

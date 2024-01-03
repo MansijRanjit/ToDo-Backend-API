@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { SECRET_KEY } from "../constants";
+import config from "../config";
 
 interface DecodedToken {
   id: number;
@@ -15,7 +15,7 @@ const auth = (
     let token = req.headers.authorization;
     if (token) {
       token = token.split(" ")[1];
-      let user = jwt.verify(token, SECRET_KEY) as DecodedToken;
+      let user = jwt.verify(token, config.jwt.accessTokenSecret!) as DecodedToken;
       req.userId = user.id;
     } else {
       res.status(401).json({ message: "Unauthorized User" });
