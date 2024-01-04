@@ -3,15 +3,14 @@ import { Request} from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ACCESS_TOKEN_TIME, REFRESH_TOKEN_TIME } from "../constants";
-import config from "../config";
+import serverConfig from "../config";
 import ConflictError from "../error/conflictError";
 import NoContentError from "../error/noContentError";
 import NotFoundError from "../error/notFoundError";
 import UnauthenticatedError from "../error/unauthenticatedError";
 
-export async function signup(req: Request) {
-  const { username, email, password } = req.body;
-
+export async function signup(username:any, email:any, password:any ) {
+  
   //Fields not empty Check
   if (!username || !email || !password) {
     throw new NoContentError("Please enter all the fields");
@@ -40,14 +39,14 @@ export async function signup(req: Request) {
   //Generate JWT Token
   const token = jwt.sign(
     { email: newUser.email, id: newUser.id },
-    config.jwt.accessTokenSecret!,
+    serverConfig.jwt.accessTokenSecret!,
     { expiresIn: ACCESS_TOKEN_TIME }
   );
 
   //Generate JWT Refresh token
   const refreshToken = jwt.sign(
     { id: newUser.id },
-    config.jwt.refreshTokenSecret!,
+    serverConfig.jwt.refreshTokenSecret!,
     {
       expiresIn: REFRESH_TOKEN_TIME,
     }
@@ -60,10 +59,8 @@ export async function signup(req: Request) {
   return { user: newUser, token: token, refreshtoken: refreshToken };
 }
 
-export async function signin(req: Request) {
-  const { username, password } = req.body;
-  console.log(users);
-
+export async function signin(username:any,password:any) {
+  
   //Fields not empty Check
   if (!username || !password) {
     throw new NoContentError("Please enter all the fields");
@@ -84,7 +81,7 @@ export async function signin(req: Request) {
   //Generate JWT Token
   const token = jwt.sign(
     { email: user.email, id: user.id },
-    config.jwt.accessTokenSecret!,
+    serverConfig.jwt.accessTokenSecret!,
     {
       expiresIn: ACCESS_TOKEN_TIME,
     }
@@ -93,7 +90,7 @@ export async function signin(req: Request) {
   //Generate JWT Refresh token
   const refreshToken = jwt.sign(
     { id: user.id },
-    config.jwt.refreshTokenSecret!,
+    serverConfig.jwt.refreshTokenSecret!,
     {
       expiresIn: REFRESH_TOKEN_TIME,
     }

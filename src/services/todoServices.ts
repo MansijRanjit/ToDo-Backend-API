@@ -2,19 +2,18 @@ import { Request } from "express";
 import tasks from "../models/todo";
 import NotFoundError from "../error/notFoundError";
 
-export async function getTask(req:Request &{userId? :number}){
-  const task = tasks.filter((task) => task.userId === req.userId);
+export async function getTask(userId:number){
+  const task = tasks.filter((task) => task.userId === userId);
   return task;
 }
 
-export async function createTask(req:Request & {userId? : number}){
-  const { title } = req.body;
+export async function createTask(title:string,userId:number){
 
   const newTask = {
     id: tasks.length + 1,
     value: title,
     completed: false,
-    userId: req.userId || 0,
+    userId: userId || 0,
   };
   tasks.push(newTask);
   return newTask;

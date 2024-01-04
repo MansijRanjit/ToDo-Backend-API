@@ -9,7 +9,7 @@ import auth from "../middlewares/auth";
 
 const todoRouter = Router();
 
-todoRouter.get("/", auth, getTask);
+todoRouter.get("/",auth, getTask);
 
 todoRouter.post("/", auth, createTask);
 

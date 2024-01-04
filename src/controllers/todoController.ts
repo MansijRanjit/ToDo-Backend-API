@@ -5,7 +5,8 @@ import * as todoService from "../services/todoServices"
 //Display Task
 const getTask = async (req: Request & { userId?: number }, res: Response) => {
   try {
-    const task= todoService.getTask(req);
+    const task= await todoService.getTask(req.userId!);
+    
     res.status(200).json(task);
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
@@ -18,7 +19,9 @@ const createTask = async (
   res: Response
 ) => {
   try {
-    const newTask = todoService.createTask(req);
+    const { title } = req.body;
+
+    const newTask = await todoService.createTask(title,req.userId!);
     res.status(201).json(newTask);
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
@@ -29,7 +32,7 @@ const createTask = async (
 const updateTask = (req: Request & { userId?: number }, res: Response) => {
   
   try {
-    const task = todoService.updateTask(req);
+    const task =  todoService.updateTask(req);
     res.status(200).json(task);
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });

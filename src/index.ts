@@ -1,5 +1,5 @@
 import express from "express";
-import config from "./config";
+import serverConfig from "./config";
 
 import routes from "./routes";
 import { logger } from "./middlewares/logger";
@@ -17,6 +17,6 @@ app.use(genericErrorHandler);
 
 app.use(notFoundError);
 
-app.listen(config.serverPort, () => {
-  console.log(`Server is listening on port: ${config.serverPort}`);
+app.listen(serverConfig.serverPort, () => {
+  console.log(`Server is listening on port: ${serverConfig.serverPort}`);
 });

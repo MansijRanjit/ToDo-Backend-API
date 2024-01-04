@@ -5,7 +5,9 @@ import * as userService from "../services/userServices"
 
 const signup = async (req: Request, res: Response,next:NextFunction) => {
   try{
-    const newUser= await userService.signup(req);
+    const { username, email, password } = req.body;
+
+    const newUser= await userService.signup(username, email, password);
 
     res
       .status(200)
@@ -19,8 +21,9 @@ const signup = async (req: Request, res: Response,next:NextFunction) => {
 const signin = async (req: Request, res: Response,next:NextFunction) => {
 
   try {
+    const { username, password } = req.body;
     console.log(users);
-    const newUser= await userService.signin(req);
+    const newUser= await userService.signin(username,password);
 
     res
       .status(200)
