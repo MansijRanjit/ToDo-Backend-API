@@ -2,14 +2,15 @@ import users from "../models/user";
 import { Request} from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { ACCESS_TOKEN_TIME, REFRESH_TOKEN_TIME } from "../constants";
+import { ACCESS_TOKEN_TIME, REFRESH_TOKEN_TIME } from "../constants/jwt";
 import serverConfig from "../config";
 import ConflictError from "../error/conflictError";
 import NoContentError from "../error/noContentError";
 import NotFoundError from "../error/notFoundError";
 import UnauthenticatedError from "../error/unauthenticatedError";
+import UserModel from "../models/user";
 
-export async function signup(username:any, email:any, password:any ) {
+export async function signup(username:string, email:string, password:any ) {
   
   //Fields not empty Check
   if (!username || !email || !password) {
@@ -17,9 +18,8 @@ export async function signup(username:any, email:any, password:any ) {
   }
 
   //Existing User Check
-  const isExistingUser = users.some(
-    (user) => user.username == username || user.email == email
-  );
+  const isExistingUser = await UserModel.getUserByUsername(username);
+
   if (isExistingUser) {
     throw new ConflictError("User or email already exists");
   }
@@ -31,35 +31,15 @@ export async function signup(username:any, email:any, password:any ) {
   const newUser = {
     id: users.length + 1,
     username: username,
-    password: hashedPassword,
     email: email,
-    refreshToken: "",
+    password: hashedPassword,
   };
 
-  //Generate JWT Token
-  const token = jwt.sign(
-    { email: newUser.email, id: newUser.id },
-    serverConfig.jwt.accessTokenSecret!,
-    { expiresIn: ACCESS_TOKEN_TIME }
-  );
-
-  //Generate JWT Refresh token
-  const refreshToken = jwt.sign(
-    { id: newUser.id },
-    serverConfig.jwt.refreshTokenSecret!,
-    {
-      expiresIn: REFRESH_TOKEN_TIME,
-    }
-  );
-
-  newUser.refreshToken = refreshToken;
-  users.push(newUser);
-  //console.log(users);
-
-  return { user: newUser, token: token, refreshtoken: refreshToken };
+  UserModel.createUser(newUser);
+  return { user: newUser};
 }
 
-export async function signin(username:any,password:any) {
+export async function signin(username:string,password:string) {
   
   //Fields not empty Check
   if (!username || !password) {
@@ -67,7 +47,7 @@ export async function signin(username:any,password:any) {
   }
 
   //Find user by Username
-  const user = users.find((u) => u.username === username);
+  const user = await UserModel.getUserByUsername(username);
   if (!user) {
     throw new NotFoundError("Invalid Username or password");
   }

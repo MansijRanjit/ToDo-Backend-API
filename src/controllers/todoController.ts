@@ -32,7 +32,10 @@ const createTask = async (
 const updateTask = (req: Request & { userId?: number }, res: Response) => {
   
   try {
-    const task =  todoService.updateTask(req);
+    const userId=req.userId;
+    const taskId= parseInt(req.params.id);
+
+    const task =  todoService.updateTask(taskId,userId!);
     res.status(200).json(task);
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
@@ -42,8 +45,10 @@ const updateTask = (req: Request & { userId?: number }, res: Response) => {
 //Delete Task
 const deleteTask = (req: Request & { userId?: number }, res: Response) => {
   try {
-    const deletedTask= todoService.deleteTask(req);
+    const userId= req.userId;
+    const taskId = parseInt(req.params.id);
 
+    const deletedTask= todoService.deleteTask(taskId,userId!);
     res.status(200).json(deletedTask);
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });

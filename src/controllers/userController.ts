@@ -14,7 +14,6 @@ const signup = async (req: Request, res: Response,next:NextFunction) => {
       .json(newUser);
   } catch (error) {
     next(error);
-    //return res.status(500).json({ message: "Something went wrong" });
   }
 };
 
@@ -30,7 +29,6 @@ const signin = async (req: Request, res: Response,next:NextFunction) => {
       .json(newUser);
   } catch (error) {
     next(error);
-   // return res.status(500).json({ message: "Something went wrong" });
   }
 };
 
